@@ -15,9 +15,10 @@ import SearchBar from './SearchBar';
 const Todo = () => {
   const [todos, setTodos] = useState([]); // State to manage todos
   const [newTodo, setNewTodo] = useState(''); // State to manage new todo input
-  const [searchTerm, setSearchTerm] = useState(''); // State to manage search todo
-  const [editingTodoId, setEditingTodoId] = useState(null); // State to manage editing todo id
-  const [editedContent, setEditedContent] = useState(''); // State to manage edited todo content
+  const [searchTodo, setSearchTodo] = useState(''); // State to manage search todo
+  const [todoName, setTodoName] = useState(''); // State to manage edited todo content
+  const [editingTodoId, setEditingTodoId] = useState(null); // State to manage editing todo id and make modal visible
+
 
   useEffect(() => {
     getTodos(); // Load todos from local storage on component mount
@@ -57,14 +58,14 @@ const Todo = () => {
   };
 
   // Function to update todo content
-  const updateTodoContent = (id) => {
+  const updateTodo = (id) => {
     const updatedTodos = todos.map((todo) =>
-      todo.id === id ? { ...todo, content: editedContent } : todo
+      todo.id === id ? { ...todo, content: todoName } : todo
     );
     setTodos(updatedTodos);
     saveTodos(updatedTodos);
     setEditingTodoId(null);
-    setEditedContent('');
+    setTodoName('');
   };
 
   // Function to render each todo item
@@ -88,10 +89,10 @@ const Todo = () => {
         <TextInput
           style={styles.input}
           placeholder="Edit todo"
-          value={editedContent}
-          onChangeText={setEditedContent}
+          value={todoName}
+          onChangeText={setTodoName}
         />
-        <Button title="Update" onPress={() => updateTodoContent(editingTodoId)} />
+        <Button title="Update" onPress={() => updateTodo(editingTodoId)} />
         <View style={{ height: 10, width: 10 }} />
         <Button title="Cancel" onPress={() => setEditingTodoId(null)} />
       </View>
@@ -101,7 +102,7 @@ const Todo = () => {
   // Function to search and filter todos based on search todo
   const searchAndFilterTodos = () => {
     return todos.filter((todo) =>
-      todo.content.toLowerCase().includes(searchTerm.toLowerCase())
+      todo.content.toLowerCase().includes(searchTodo.toLowerCase())
     );
   };
 
@@ -138,7 +139,7 @@ const Todo = () => {
         <Text style={styles.buttonText}>Add Todo</Text>
       </TouchableOpacity>
 
-      <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+      <SearchBar searchTodo={searchTodo} onSearchChange={setSearchTodo} />
 
       {todos == '' ? <Text style={styles.emptyItem}>Nothing to Do!</Text> : <FlatList
         data={sortTodos(searchAndFilterTodos())}
@@ -148,7 +149,7 @@ const Todo = () => {
 
       {renderEditModal()}
     </View>
-  );
+  ); 
 };
 
 const styles = StyleSheet.create({
